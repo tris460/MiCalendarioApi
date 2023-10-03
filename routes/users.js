@@ -64,7 +64,7 @@ app.post('/users', (req, res) => {
     officeAddress: req.body.officeAddress,
     appointments: req.body.appointments,
   });
-
+  
   user.save()
     .then(savedUser => {
       res.json({

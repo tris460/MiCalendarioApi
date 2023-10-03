@@ -13,40 +13,32 @@ const userSchema = new Schema({
     required: [true]
   },
   pin: {
-    type: String,
-    required: [true]
+    type: Number,
+    required: [false]
   },
   sex: {
     type: String,
-    required: [false],
-    validate: {
-      validator: function(value) {
-        return ['Male', 'Female'].includes(value);
-      },
-      message: 'The field "sex" has to be "Male" or "Female".'
-    },
+    required: [true],
+    default: 'female',
   },
   role: {
     type: String,
     required: [true],
-    validate: {
-      validator: function(value) {
-        return ['Patient', 'Doctor'].includes(value);
-      },
-      message: 'The field "role" has to be "Patient" or "Doctor".'
-    },
+    default: 'patient',
   },
-  symptoms: [
-    symptomSchema
-  ],
+  symptoms: {
+    type: symptomSchema,
+    required: [false]
+  },
   pet: {
     type: String,
-    required: [true],
+    required: [false],
     default: 'assets/pets/pet1.png'
   },
   doctor: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Users'
+    ref: 'Users',
+    required: [false]
   }],
   license: {
     type: String,
@@ -66,14 +58,15 @@ const userSchema = new Schema({
   },
   patients: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Users'
+    ref: 'Users',
+    required: [false]
   }],
   officeAddress: {
     type: String,
     required: [false]
   },
   appointments: [{
-    type: String,
+    type: String, //TODO: Validate type
     required: [false]
   }],
 });
