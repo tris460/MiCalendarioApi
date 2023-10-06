@@ -3,6 +3,9 @@ const _ = require('underscore');
 const app = express();
 const User = require('../models/users');
 
+/**
+ * This function allows the validation of an user's email & pin
+ */
 app.put('/login', async (req, res) => {
   const { email, pin } = req.body;
 
@@ -16,6 +19,26 @@ app.put('/login', async (req, res) => {
 
     // If the credentials are valid, return the user's data
     return res.status(200).json({ message: 'Valid credentials', data: user });
+  } catch (err) {
+    return res.status(500).json({ error: 'Server error' });
+  }
+});
+
+/**
+ * This function returns the info of an user
+ */
+app.get('/user', async (req, res) => {
+  const email = req.query.email;
+
+  try {
+    // Get the user in DB by its email
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    return res.status(200).json({ data: user });
   } catch (err) {
     return res.status(500).json({ error: 'Server error' });
   }
