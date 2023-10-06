@@ -131,6 +131,31 @@ app.put("/users/:id", function(req, res) {
 });
 
 /**
+ * Function to update the pet of a user
+ */
+app.put("/users/:id/pet", function(req, res) {
+  let id = req.params.id;
+  let newPet = req.body.pet; 
+
+  User.findByIdAndUpdate(id, { pet: newPet }, { new: true, runValidators: true, context: 'query' })
+    .then(updatedUser => {
+      res.json({
+        ok: true,
+        msg: 'Pet updated successfully',
+        data: updatedUser
+      });
+    })
+    .catch(err => {
+      return res.status(400).json({
+        ok: false,
+        msg: 'Error updating pet',
+        error: err
+      });
+    });
+});
+
+
+/**
  * Function to delete an user by its ID
  */
 app.delete("/users/:id", function(req, res) {
