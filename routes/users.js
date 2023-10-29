@@ -85,7 +85,7 @@ app.post('/users', (req, res) => {
     cost: req.body.cost,
     patients: req.body.patients,
     officeAddress: req.body.officeAddress,
-    appointments: req.body.appointments,
+    appointments: req.body.appointments
   });
   
   user.save()
