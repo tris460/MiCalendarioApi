@@ -4,11 +4,35 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const symptomSchema = new Schema({
+  bald: {
+    type: Boolean,
+    required: [false]
+  },
+  condom: {
+    type: Boolean,
+    required: [false]
+  },
+  contraceptives: {
+    type: [String],
+    required: [false]
+  },
   date: {
-    type: Date,
+    type: String,
     required: [true]
   },
-  periodStarts: {
+  emergencyPill: {
+    type: Boolean,
+    required: [false]
+  },
+  emotions: [{
+    type: String,
+    required: [false]
+  }],
+  height: {
+    type: Number,
+    required: [false]
+  },
+  orgasm: {
     type: Boolean,
     required: [false]
   },
@@ -16,23 +40,7 @@ const symptomSchema = new Schema({
     type: Boolean,
     required: [false]
   },
-  emergencyPill: {
-    type: Boolean,
-    required: [false]
-  },
-  viagra: {
-    type: Boolean,
-    required: [false]
-  },
-  testicularPain: {
-    type: Boolean,
-    required: [false]
-  },
-  bald: {
-    type: Boolean,
-    required: [false]
-  },
-  pregnant: {
+  periodStarts: {
     type: Boolean,
     required: [false]
   },
@@ -40,15 +48,7 @@ const symptomSchema = new Schema({
     type: Number,
     required: [false]
   },
-  contraceptives: {
-    type: [String],
-    required: [false]
-  },
-  condom: {
-    type: Boolean,
-    required: [false]
-  },
-  orgasm: {
+  pregnant: {
     type: Boolean,
     required: [false]
   },
@@ -56,31 +56,31 @@ const symptomSchema = new Schema({
     type: Number,
     required: [false]
   },
+  sleep: {
+    type: Number,
+    required: [false]
+  },
+  symptoms: [{
+    type: String,
+    required: [false]
+  }],
   temperature: {
     type: Number,
     required: [false]
   },
-  emotions: {
-    type: String,
+  testicularPain: {
+    type: Boolean,
     required: [false]
   },
-  symptoms: {
-    type: String,
-    required: [false]
-  },
-  weight: {
-    type: Number,
-    required: [false]
-  },
-  height: {
-    type: Number,
+  viagra: {
+    type: Boolean,
     required: [false]
   },
   water: {
     type: Number,
     required: [false]
   },
-  sleep: {
+  weight: {
     type: Number,
     required: [false]
   },

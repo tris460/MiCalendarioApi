@@ -154,6 +154,33 @@ app.put("/users/:id/pet", function(req, res) {
     });
 });
 
+/**
+ * Function to add a symptom record to a user
+ */
+app.post('/users/:id/symptoms', async (req, res) => {
+  const userId = req.params.id;
+  const newSymptomData = req.body;
+
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    user.symptoms.push(newSymptomData);
+
+    const updatedUser = await user.save();
+
+    return res.status(200).json({
+      msg: 'Symptom record added successfully',
+      data: updatedUser,
+    });
+  } catch (err) {
+    console.error(err)
+    return res.status(500).json({ error: 'Server error' });
+  }
+});
 
 /**
  * Function to delete an user by its ID

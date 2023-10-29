@@ -26,10 +26,7 @@ const userSchema = new Schema({
     required: [true],
     default: 'patient',
   },
-  symptoms: {
-    type: symptomSchema,
-    required: [false]
-  },
+  symptoms: [symptomSchema],
   pet: {
     type: String,
     required: [false],
