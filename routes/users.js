@@ -11,20 +11,20 @@ app.put('/login', async (req, res) => {
   const { email, pin } = req.body;
 
   try {
-    // Obtén el usuario en la base de datos por su email
+    // Get the user in the database by their email
     const user = await User.findOne({ email });
 
     if (!user) {
       return res.status(401).json({ error: 'User not found' });
     }
     console.log('Datos del usuario encontrado:', user);
-    // Compara el PIN almacenado en la base de datos con el PIN proporcionado
+    // Compares the PIN stored in the database with the PIN provided
     bcrypt.compare(pin.toString(), user.pin, (err, result) => {
       if (err || !result) {
         return res.status(401).json({ error: 'Invalid credentials' });
       }
 
-      // Si las credenciales son válidas, devuelve los datos del usuario
+      // If the credentials are valid, returns the user data
       return res.status(200).json({ message: 'Valid credentials', data: user });
     });
   } catch (err) {
@@ -101,7 +101,7 @@ app.post('/users', (req, res) => {
   });
 console.log(user.pin);
 const pinAsString = req.body.pin.toString();
-  // Genera un salt y luego hashea el PIN
+  // Generate a salt and then hash the PIN
   bcrypt.genSalt(10, (err, salt) => {
     console.log(salt);
     if (err) {
@@ -112,7 +112,7 @@ const pinAsString = req.body.pin.toString();
         console.log(err);
         return res.status(500).json({ error: 'error al generar hash' });
       }
-      user.pin = hash; // Asigna el hash en lugar del PIN original
+      user.pin = hash; // Assign the hash instead of the original PIN
       user.save()
         .then(savedUser => {
           res.json({
