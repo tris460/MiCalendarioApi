@@ -182,6 +182,33 @@ app.put("/users/:id/pet", function(req, res) {
     });
 });
 
+/**
+ * Function to add a symptom record to a user
+ */
+app.post('/users/:id/symptoms', async (req, res) => {
+  const userId = req.params.id;
+  const newSymptomData = req.body;
+
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    user.symptoms.push(newSymptomData);
+
+    const updatedUser = await user.save();
+
+    return res.status(200).json({
+      msg: 'Symptom record added successfully',
+      data: updatedUser,
+    });
+  } catch (err) {
+    console.error(err)
+    return res.status(500).json({ error: 'Server error' });
+  }
+});
 
 /**
  * Function to delete an user by its ID
@@ -206,5 +233,30 @@ app.delete("/users/:id", function(req, res) {
     });
 });
 
+/**
+ * Function to get symptoms by date for a specific user
+ */
+app.get('/users/:id/symptoms', async (req, res) => {
+  const { id } = req.params;
+  const { date } = req.query;
+
+  try {
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const userSymptoms = user.symptoms.filter(symptom => symptom.date === date);
+
+    if (userSymptoms.length === 0) {
+      return res.status(404).json({ error: 'No symptoms found for the specified date' });
+    }
+
+    return res.status(200).json({ data: userSymptoms });
+  } catch (err) {
+    return res.status(500).json({ error: 'Server error' });
+  }
+});
 
 module.exports = app;
