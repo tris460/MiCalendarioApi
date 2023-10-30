@@ -33,9 +33,6 @@ app.put('/login', async (req, res) => {
   }
 });
 
-
-
-
 /**
  * This function returns the info of an user
  */
@@ -99,18 +96,18 @@ app.post('/users', (req, res) => {
     officeAddress: req.body.officeAddress,
     appointments: req.body.appointments
   });
-console.log(user.pin);
-const pinAsString = req.body.pin.toString();
+  
+  const pinAsString = req.body.pin.toString();
   // Generate a salt and then hash the PIN
   bcrypt.genSalt(10, (err, salt) => {
     console.log(salt);
     if (err) {
-      return res.status(500).json({ error: 'error al generar salt' });
+      return res.status(500).json({ error: 'Error generating salt' });
     }
     bcrypt.hash(pinAsString, salt, (err, hash) => {
       if (err) {
         console.log(err);
-        return res.status(500).json({ error: 'error al generar hash' });
+        return res.status(500).json({ error: 'Error generating hash' });
       }
       user.pin = hash; // Assign the hash instead of the original PIN
       user.save()
@@ -131,7 +128,6 @@ const pinAsString = req.body.pin.toString();
     });
   });
 });
-
 
 /**
  * Function to update an user
