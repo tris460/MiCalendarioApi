@@ -231,4 +231,25 @@ app.get('/users/:id/symptoms', async (req, res) => {
   }
 });
 
+/**
+ * Function to get all symptoms for a specific user
+ */
+app.get('/users/:id/symptoms/all', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const userSymptoms = user.symptoms;
+
+    return res.status(200).json({ data: userSymptoms });
+  } catch (err) {
+    return res.status(500).json({ error: 'Server error' });
+  }
+});
+
 module.exports = app;
