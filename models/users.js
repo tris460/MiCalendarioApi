@@ -13,7 +13,7 @@ const userSchema = new Schema({
     required: [true]
   },
   pin: {
-    type: Number,
+    type: String, 
     required: [false]
   },
   sex: {
