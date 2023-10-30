@@ -2,6 +2,7 @@ const express = require("express");
 const _ = require('underscore');
 const app = express();
 const User = require('../models/users');
+const bcrypt = require('bcrypt');
 
 /**
  * This function allows the validation of an user's email & pin
@@ -10,19 +11,30 @@ app.put('/login', async (req, res) => {
   const { email, pin } = req.body;
 
   try {
-    // Get the user in DB by its email
+    // Get the user in the database by their email
     const user = await User.findOne({ email });
 
-    if (!user || user.pin !== pin) {
-      return res.status(401).json({ error: 'Invalid credentials' });
+    if (!user) {
+      return res.status(401).json({ error: 'User not found' });
     }
+    console.log('Datos del usuario encontrado:', user);
+    // Compares the PIN stored in the database with the PIN provided
+    bcrypt.compare(pin.toString(), user.pin, (err, result) => {
+      if (err || !result) {
+        return res.status(401).json({ error: 'Invalid credentials' });
+      }
 
-    // If the credentials are valid, return the user's data
-    return res.status(200).json({ message: 'Valid credentials', data: user });
+      // If the credentials are valid, returns the user data
+      return res.status(200).json({ message: 'Valid credentials', data: user });
+    });
   } catch (err) {
+
     return res.status(500).json({ error: 'Server error' });
   }
 });
+
+
+
 
 /**
  * This function returns the info of an user
@@ -87,23 +99,39 @@ app.post('/users', (req, res) => {
     officeAddress: req.body.officeAddress,
     appointments: req.body.appointments
   });
-  
-  user.save()
-    .then(savedUser => {
-      res.json({
-        ok: true,
-        msg: 'User saved successfully',
-        data: savedUser
-      });
-    })
-    .catch(err => {
-      return res.status(400).json({
-        ok: false,
-        msg: 'Error saving user',
-        error: err
-      });
+console.log(user.pin);
+const pinAsString = req.body.pin.toString();
+  // Generate a salt and then hash the PIN
+  bcrypt.genSalt(10, (err, salt) => {
+    console.log(salt);
+    if (err) {
+      return res.status(500).json({ error: 'error al generar salt' });
+    }
+    bcrypt.hash(pinAsString, salt, (err, hash) => {
+      if (err) {
+        console.log(err);
+        return res.status(500).json({ error: 'error al generar hash' });
+      }
+      user.pin = hash; // Assign the hash instead of the original PIN
+      user.save()
+        .then(savedUser => {
+          res.json({
+            ok: true,
+            msg: 'User saved successfully',
+            data: savedUser
+          });
+        })
+        .catch(err => {
+          return res.status(400).json({
+            ok: false,
+            msg: 'Error saving user',
+            error: err
+          });
+        });
     });
+  });
 });
+
 
 /**
  * Function to update an user
