@@ -17,8 +17,7 @@ app.put('/login', async (req, res) => {
     if (!user) {
       return res.status(401).json({ error: 'User not found' });
     }
-    console.log('Datos del usuario encontrado:', user);
-    console.log(pin);
+    
     if (pin === null && user.pin === null) {
       return res.status(200).json({ message: 'Valid credentials', data: user });
     }if (pin !== null && user.pin !== null) {
