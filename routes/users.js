@@ -287,7 +287,7 @@ app.get('/users/:id/symptoms', async (req, res) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    const userSymptoms = user.symptoms.filter(symptom => symptom.date === date);
+    const userSymptoms = user.symptoms.filter(symptom => { return symptom.date === date });
 
     if (userSymptoms.length === 0) {
       return res.status(404).json({ error: 'No symptoms found for the specified date' });
