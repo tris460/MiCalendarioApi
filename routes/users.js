@@ -158,7 +158,29 @@ app.put("/users/:id", function(req, res) {
   let id = req.params.id;
   let body = _.pick(req.body, ['fullName', 'email', 'pin', 'sex', 'role', 'symptoms', 'pet', 'doctor', 'license',
    'profession', 'description', 'cost', 'patients', 'officeAddress', 'appointments']);
+   body.pin = body.pin !== undefined ? body.pin : null;
 
+   if (body.pin !== null) {
+    const pinAsString = body.pin.toString();
+    // Generate a salt and then hash the PIN
+    bcrypt.genSalt(10, (err, salt) => {
+      if (err) {
+        return res.status(500).json({ error: 'Error generating salt' });
+      }
+      bcrypt.hash(pinAsString, salt, (err, hash) => {
+        if (err) {
+          return res.status(500).json({ error: 'Error generating hash' });
+        }
+        body.pin = hash; // Assign the hash instead of the original PIN
+        updateUser(id, body, res);
+      });
+    });
+  } else {
+    updateUser(id, body, res);
+  }
+});
+
+function updateUser(id, body, res) {
   User.findByIdAndUpdate(id, body, { new: true, runValidators: true, context: 'query' })
     .then(updatedUser => {
       res.json({
@@ -174,7 +196,7 @@ app.put("/users/:id", function(req, res) {
         error: err
       });
     });
-});
+}
 
 /**
  * Function to update the pet of a user
