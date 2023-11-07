@@ -320,4 +320,38 @@ app.get('/users/:id/symptoms/all', async (req, res) => {
   }
 });
 
+/**
+ * This function updates the symptoms of an specific user on a specific date
+ */
+app.put('/users/:id/symptoms/:date', async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const symptomDate = req.params.date;
+    const updatedSymptomData = req.body;
+  
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const symptomIndex = user.symptoms.findIndex(symptom => symptom.date === symptomDate);
+
+    if (!symptomIndex) {
+      return res.status(404).json({ error: 'Symptom not found for the specified date' });
+    }
+
+    user.symptoms[symptomIndex] = { ...user.symptoms[symptomIndex], ...updatedSymptomData };
+    const updatedUser = await user.save();
+
+    return res.status(200).json({
+      msg: 'Symptom updated successfully',
+      data: updatedUser,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: 'Server error' });
+  }
+});
+
 module.exports = app;
