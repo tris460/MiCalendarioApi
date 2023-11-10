@@ -180,6 +180,9 @@ app.put("/users/:id", function(req, res) {
   }
 });
 
+/**
+ * Function to update an user
+ */
 function updateUser(id, body, res) {
   User.findByIdAndUpdate(id, body, { new: true, runValidators: true, context: 'query' })
     .then(updatedUser => {
@@ -353,5 +356,41 @@ app.put('/users/:id/symptoms/:date', async (req, res) => {
     return res.status(500).json({ error: 'Server error' });
   }
 });
+
+/**
+ * This function adds or updates a note depending if it exists
+ */
+app.put('/users/:id/symptoms/:date/notes', async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const symptomDate = req.params.date;
+    const updatedNotesData = req.body;
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const symptomIndex = user.symptoms.findIndex(symptom => symptom.date === symptomDate);
+
+    if (symptomIndex === -1) {
+      user.symptoms.push({ date: symptomDate, notes: updatedNotesData });
+    } else {
+      user.symptoms[symptomIndex].notes = updatedNotesData;
+    }
+
+    const updatedUser = await user.save();
+
+    return res.status(200).json({
+      msg: 'Notes updated successfully',
+      data: updatedUser,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: 'Server error' });
+  }
+});
+
 
 module.exports = app;
