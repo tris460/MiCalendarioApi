@@ -392,5 +392,36 @@ app.put('/users/:id/symptoms/:date/notes', async (req, res) => {
   }
 });
 
+/**
+ * This function obtains the notes of a specific date
+ */
+app.get('/users/:id/symptoms/:date/notes', async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const symptomDate = req.params.date;
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const symptomIndex = user.symptoms.findIndex(symptom => symptom.date === symptomDate);
+
+    if (symptomIndex === -1 || !user.symptoms[symptomIndex].notes) {
+      return res.status(404).json({ error: 'Notes not found for the specified date' });
+    }
+
+    const notes = user.symptoms[symptomIndex].notes;
+
+    return res.status(200).json({
+      msg: 'Notes retrieved successfully',
+      data: notes,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: 'Server error' });
+  }
+});
 
 module.exports = app;
