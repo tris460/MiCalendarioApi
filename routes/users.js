@@ -424,4 +424,39 @@ app.get('/users/:id/symptoms/:date/notes', async (req, res) => {
   }
 });
 
+/**
+ * This function gets all the notes of an user
+ */
+app.get('/users/:id/notes', async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const allNotes = [];
+
+    // Iterar sobre los síntomas del usuario y recopilar todas las notas
+    user.symptoms.forEach(symptom => {
+      if (symptom.notes) {
+        allNotes.push({
+          date: symptom.date,
+          notes: symptom.notes,
+        });
+      }
+    });
+
+    return res.status(200).json({
+      msg: 'All notes retrieved successfully',
+      data: allNotes,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: 'Server error' });
+  }
+});
+
 module.exports = app;
