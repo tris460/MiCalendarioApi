@@ -439,7 +439,6 @@ app.get('/users/:id/notes', async (req, res) => {
 
     const allNotes = [];
 
-    // Iterar sobre los síntomas del usuario y recopilar todas las notas
     user.symptoms.forEach(symptom => {
       if (symptom.notes) {
         allNotes.push({
