@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const morgan = require('morgan')
 const app = express();
+require("dotenv").config();
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -15,7 +16,7 @@ app.use(morgan('dev'));
 
 app.use(require('./routes/users'));
 
-mongoose.connect('mongodb://127.0.0.1:27017/miCalendario') //TODO: Update URL 
+mongoose.connect(process.env.MONGODB_URI) //TODO: Update URL 
     .then(() => {
         console.log('Database online');
     })
