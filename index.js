@@ -19,11 +19,10 @@ app.use(require('./routes/users'));
 mongoose.connect(process.env.MONGODB_URI) //TODO: Update URL 
     .then(() => {
         console.log('Database online');
+        app.listen(process.env.PORT, () => {
+            console.log('Server online on port', process.env.PORT);
+        });
     })
     .catch((err) => {
         console.error('Error connecting to database: ', err);
     })
-
-app.listen(process.env.PORT, () => {
-    console.log('Server online on port', process.env.PORT);
-});
