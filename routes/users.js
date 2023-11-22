@@ -202,6 +202,36 @@ function updateUser(id, body, res) {
 }
 
 /**
+ * This function updates the appointments for two users
+ */
+app.put('/users/updateAppointments', async (req, res) => {
+  try {
+    const { userId1, userId2, appointment } = req.body;
+
+    const user1 = await User.findById(userId1);
+    const user2 = await User.findById(userId2);
+    
+    if (!user1 || !user2) {
+      return res.status(404).json({ error: 'Users not found' });
+    }
+
+    user1.appointments.push(appointment);
+    user2.appointments.push(appointment);
+
+    const updatedUser1 = await user1.save();
+    const updatedUser2 = await user2.save();
+
+    return res.status(200).json({
+      msg: 'Appointments updated successfully for both users',
+      data: { user1: updatedUser1, user2: updatedUser2 },
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: 'Server error' });
+  }
+});
+
+/**
  * Function to update the pet of a user
  */
 app.put("/users/:id/pet", function(req, res) {
