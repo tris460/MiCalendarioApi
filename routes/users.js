@@ -490,4 +490,31 @@ app.get('/users/:id/notes', async (req, res) => {
   }
 });
 
+/**
+ * This function gets all the appointments of an user
+ */
+app.get('/users/:id/appointments', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const userAppointments = user.appointments;
+
+    if (!userAppointments || userAppointments.length === 0) {
+      return res.status(404).json({ error: 'No appointments found for the specified user' });
+    }
+
+    return res.status(200).json({ data: userAppointments });
+  } catch (err) {
+    return res.status(500).json({ error: 'Server error' });
+  }
+});
+
+
+
 module.exports = app;
