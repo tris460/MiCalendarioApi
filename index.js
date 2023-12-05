@@ -16,7 +16,7 @@ app.use(morgan('dev'));
 
 app.use(require('./routes/users'));
 
-mongoose.connect(process.env.MONGODB_URI) //TODO: Update URL 
+mongoose.connect(process.env.MONGODB_URI)
     .then(() => {
         console.log('Database online');
         app.listen(process.env.PORT, () => {

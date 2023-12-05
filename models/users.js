@@ -63,7 +63,7 @@ const userSchema = new Schema({
     required: [false]
   },
   appointments: [{
-    type: String, //TODO: Validate type
+    type: String,
     required: [false]
   }],
 });

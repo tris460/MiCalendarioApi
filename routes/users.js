@@ -212,6 +212,38 @@ function updateUser(id, body, res) {
 }
 
 /**
+ * This function updates the appointments for two users
+ */
+app.put('/users/appointments/:id1/:id2', async (req, res) => {
+  try {
+    const id1 = req.params.id1;
+    const id2 = req.params.id2;
+    const { appointment } = req.body;
+    
+    const user1 = await User.findById(id1);
+    const user2 = await User.findById(id2);
+    
+    if (!user1 || !user2) {
+      return res.status(404).json({ error: 'Users not found' });
+    }
+
+    user1.appointments.push(appointment);
+    user2.appointments.push(appointment);
+    
+    const updatedUser1 = await user1.save();
+    const updatedUser2 = await user2.save();
+
+    return res.status(200).json({
+      msg: 'Appointments updated successfully for both users',
+      data: { user1: updatedUser1, user2: updatedUser2 },
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: 'Server error' });
+  }
+});
+
+/**
  * Function to update the pet of a user
  */
 app.put("/users/:id/pet", function(req, res) {
@@ -467,5 +499,32 @@ app.get('/users/:id/notes', async (req, res) => {
     return res.status(500).json({ error: 'Server error' });
   }
 });
+
+/**
+ * This function gets all the appointments of an user
+ */
+app.get('/users/:id/appointments', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const userAppointments = user.appointments;
+
+    if (!userAppointments || userAppointments.length === 0) {
+      return res.status(404).json({ error: 'No appointments found for the specified user' });
+    }
+
+    return res.status(200).json({ data: userAppointments });
+  } catch (err) {
+    return res.status(500).json({ error: 'Server error' });
+  }
+});
+
+
 
 module.exports = app;
