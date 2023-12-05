@@ -1,0 +1,13 @@
+config:
+  target: 'http://localhost:3000'
+
+scenarios:
+  - flow:
+      - get:
+          url: '/api/posts'
+      - think: 3
+      - post:
+          url: '/api/posts'
+          json:
+            title: 'New Post'
+            content: 'This is a new post.'

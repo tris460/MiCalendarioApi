@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node index.js",
     "start2": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "coverage": "nyc --reporter=text mocha ./src/test/**/*.userRoutes.test.js"
   },
   "keywords": [
     "Server",
@@ -25,5 +26,10 @@
     "morgan": "^1.10.0",
     "nodemon": "^3.0.1",
     "underscore": "^1.13.6"
+  },
+  "devDependencies": {
+    "chai": "^4.3.10",
+    "mocha": "^10.2.0",
+    "supertest": "^6.3.3"
   }
 }

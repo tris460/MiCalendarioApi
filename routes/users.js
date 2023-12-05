@@ -24,6 +24,7 @@ app.put('/login', async (req, res) => {
         // Compares the PIN stored in the database with the PIN provided
         bcrypt.compare(pin.toString(), user.pin, (err, result) => {
           if (err || !result) {
+            debugger;
             return res.status(401).json({ error: 'Invalid credentials' });
           }
           // If the credentials are valid, returns the user data
@@ -33,7 +34,7 @@ app.put('/login', async (req, res) => {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
   } catch (err) {
-
+    debugger;
     return res.status(500).json({ error: 'Server error' });
   }
 });
@@ -64,6 +65,7 @@ app.get('/user', async (req, res) => {
 app.get('/users', (req, res) => {
   User.find({})
     .then(users => {
+      debugger;
       res.json({
         ok: true,
         msg: 'Users retrieved successfully',
@@ -72,6 +74,7 @@ app.get('/users', (req, res) => {
       });
     })
     .catch(err => {
+      debugger;
       return res.status(400).json({
         ok: false,
         msg: 'Error retrieving users',
@@ -104,6 +107,7 @@ app.post('/users', (req, res) => {
   if (user.pin === null) {
     user.save()
         .then(savedUser => {
+          debugger;
           res.json({
             ok: true,
             msg: 'User saved successfully',
@@ -111,6 +115,7 @@ app.post('/users', (req, res) => {
           });
         })
         .catch(err => {
+          debugger;
           return res.status(400).json({
             ok: false,
             msg: 'Error saving user',
@@ -121,18 +126,19 @@ app.post('/users', (req, res) => {
     const pinAsString = req.body.pin.toString();
     // Generate a salt and then hash the PIN
     bcrypt.genSalt(10, (err, salt) => {
-      console.log(salt);
       if (err) {
+        debugger;
         return res.status(500).json({ error: 'Error generating salt' });
       }
       bcrypt.hash(pinAsString, salt, (err, hash) => {
         if (err) {
-          console.log(err);
+          debugger;
           return res.status(500).json({ error: 'Error generating hash' });
         }
         user.pin = hash; // Assign the hash instead of the original PIN
         user.save()
           .then(savedUser => {
+            debugger;
             res.json({
               ok: true,
               msg: 'User saved successfully',
@@ -140,6 +146,7 @@ app.post('/users', (req, res) => {
             });
           })
           .catch(err => {
+            debugger;
             return res.status(400).json({
               ok: false,
               msg: 'Error saving user',
@@ -165,10 +172,12 @@ app.put("/users/:id", function(req, res) {
     // Generate a salt and then hash the PIN
     bcrypt.genSalt(10, (err, salt) => {
       if (err) {
+        debugger;
         return res.status(500).json({ error: 'Error generating salt' });
       }
       bcrypt.hash(pinAsString, salt, (err, hash) => {
         if (err) {
+          debugger;
           return res.status(500).json({ error: 'Error generating hash' });
         }
         body.pin = hash; // Assign the hash instead of the original PIN
@@ -186,6 +195,7 @@ app.put("/users/:id", function(req, res) {
 function updateUser(id, body, res) {
   User.findByIdAndUpdate(id, body, { new: true, runValidators: true, context: 'query' })
     .then(updatedUser => {
+      debugger;
       res.json({
         ok: true,
         msg: 'User updated successfully',
